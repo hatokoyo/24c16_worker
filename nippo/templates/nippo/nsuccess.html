@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja" xml:lang="ja">
+<head prefix="og: http://ogp.me/ns#">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+<title>日報送信成功 ｜ 日報アプリ</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/common62.css' %}" media="all"/>
+
+<!-- Update the CSS in the <head> section -->
+<style>
+    input[type="time"] {
+      -webkit-border-radius: 0px; 
+      background: white; 
+      width: 80px;
+      height: 26px; 
+      font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;
+      font-size: 14.5px;
+      border: 1px solid #ccc;
+      color: black;
+    }
+
+    input[type="time"]:disabled {
+      background: lightgray; /* 無効時の背景色を変更 */
+    }
+
+    .video-container {
+      position:fixed;
+
+      left: 0;
+      width: 100%; /* 必要に応じてサイズを調整 */
+      height: auto; /* 必要に応じてサイズを調整 */
+      object-fit: cover;
+      z-index: index -1;
+      padding: 0;
+      margin: 0;
+     }
+</style>
+</head>
+<body>
+</div>  </header>
+  <!-- LayerHeader End -->
+<div id="main" class="main">
+  <div class="category-heading">
+    <div class="heading">
+      <div class="heading__Body">
+        <h1>日報入力</h1>
+        <div class="navToggle">
+            <button id="js-navToggle" title="メニューの開閉ボタン"><img src="/media/pages/menuBtn.png" width="45" height="45" alt="メニュー"></button>
+          </div>
+
+    </div>
+</div>
+  </div>
+
+  <!--<video class="video-container" autoplay muted playsinline id="myVideo">
+    <source src="" type="video/webm">
+    お使いのブラウザは動画タグに対応していません。
+</video>-->
+
+
+
+
+  <!-- /.breadCrumb -->
+    <div class="main__body">
+      <!-- [ Reader Start ] -->
+      <!-- [ Reader End ] -->
+    <div class="main__body__left">
+        <h2>{{ name }} さん</h2>
+
+       <!-- <video class="video-container" autoplay muted playsinline id="myVideoIOS">
+          <source src="" type="video/webm">
+          お使いのブラウザは動画タグに対応していません。
+      </video>-->
+
+      <div>正常に送信されました。<span class="arrow" style="padding-left:13px;">→</span><a class="link-container" href="{% url 'nhistory' %}">送信履歴を見る</a></div> 
+
+
+<div class="form">
+  <div>
+    <form method="POST">{% csrf_token %}
+      
+
+      {% for data_list in data_list %}
+        <div class="field">
+          <div class="field__title" style="padding-left: 10px;">日付
+            <span class="label label-required">必須</span></div>
+          <div style="margin-bottom: 10px; padding-left: 10px;">
+            <input type="date" value="{{ data_list.date }}" disabled class="inputbox_date_dis">
+          </div>
+        </div>
+
+      
+      
+        
+        <div class="field"><div class="field__title">勤務時間
+          <span class="label label-required"> 必須</span></div>
+          <div>
+            <div class="field__title">
+              <label>開始時間：</label>
+              <input type="time" value="{{ data_list.start }}" disabled>
+            </div>
+          </div>
+      
+          <div>
+            <div class="field__title">
+              <label>休憩</label>
+              <input type="time" value="{{ data_list.break_start }}" disabled>
+              <span>〜</span>
+              <input type="time" value="{{ data_list.break_end }}" disabled>
+            </div>
+          </div>
+      
+          <div style="margin-bottom: 10px;">
+              <label>終了時間：</label>
+              <input type="time" value="{{ data_list.end }}" disabled>
+          </div>
+
+ 
+        </div>
+
+
+        <div class="field">
+          <div class="field__title">
+              <label>工番</label>
+              <span class="label label-required">必須</span>
+          </div>
+      
+          <div>
+              <select disabled  class="inputbox_koban_dis">
+                  <option value="">{{ data_list.koban }}</option>
+              </select>
+          </div>
+      
+      </div>
+
+
+
+      <div class="field"><div class="field__title">交通費
+        <span class="label label-required">必須</span></div>
+             <div>
+              <div class="field__title">
+            {% if trans_option == 1 %}
+            <label>車：</label>
+            <select disabled class="inputbox_trans_dis"> 
+              <option >{{ data_list.trans_office }}</option>
+            </select>
+
+
+            <div class="field__title" style="margin-top: 7px;">
+              <label>
+                <input type="checkbox" name="trans" value="1"{% if data_list.trans == "1" %}checked{% endif %} disabled> 運転者
+              </label>
+              <label>
+                <input type="checkbox" name="trans" value="0"{% if data_list.trans == "0" %}checked{% endif %} disabled> 同乗者
+              </label>
+          </div>
+          {% elif trans_option == 0 %}
+          <label>自動車：</label>
+          <div class="field__title1">
+            <label>
+              <input type="checkbox" name="trans" value="1"{% if data_list.trans == "1" %}checked{% endif %} disabled> 運転者
+            </label>
+            <label>
+              <input type="checkbox" name="trans" value="0"{% if data_list.trans == "0" %}checked{% endif %} disabled> 同乗者
+            </label>
+        </div>
+        {% endif %}
+
+          <div class="field__title">
+          <label>その他：</label>
+          </div>
+        
+          <div class="field__title">
+            <label >
+              <input type="checkbox" name="trans" value="2" {% if data_list.trans == "2" %}checked{% endif %} disabled> 公共交通機関
+            </label>
+            <label>
+              <input type="checkbox" name="trans" value="3" {% if data_list.trans == "3" %}checked{% endif %} disabled> 利用なし
+            </label>
+        </div>
+
+      </div>
+    </div>
+      
+    </div>
+
+
+    <div class="field">
+      <span class="arrow">→</span> <!-- 緑色の矢印 -->
+      <label id="toggleSpecialInput" style="cursor: pointer;">特殊入力</label>
+    
+      <!-- 休憩追加のセクション -->
+      <div id="breakTimeDiv1" style="display: none; padding-top: 5px;">
+          <div class="field__title" style="padding: 2px 0;">
+            <label>休憩追加：</label>
+            <div style=" color: #9c2400; font-size: smaller; padding-bottom: 5px;">3回以上の休憩は、複数入力より送信してください。</div>
+            <div>
+            <input type="time" name="break_time_start2" disabled style="-webkit-border-radius: 0px; background: lightgray; width: 80px;height: 26px; font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;font-size: 14px; border: 1px solid #ccc;">
+            <span>〜</span>
+            <input type="time" name="break_time_end2" disabled style="-webkit-border-radius: 0px; background: lightgray; width: 80px;height: 26px; font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;font-size: 14px; border: 1px solid #ccc;">
+          </div>
+          </div>
+      </div>
+
+      <div id="breakTimeDiv2" style="display: none; padding-top: 5px;" class="field__title1">
+        <label>社内契約お弁当：</label>
+        <label>
+          <input type="radio" name="lunch_box" value="1" {% if data_list.lunch == "1" %}checked{% endif %} disabled>&thinsp;利用あり
+          </label>
+          <label>
+          &thinsp;<input type="radio" name="lunch_box" value="0" {% if data_list.lunch == "0" %}checked{% endif %} disabled>&thinsp;利用なし
+          </label>
+      </div>
+    
+      <!-- コメントのセクション -->
+      <div id="breakTimeDiv3" style="display: none;">
+        <label>コメント</label>
+        <div>
+          <textarea cols="30" rows="6" name="comment" disabled>{{data_list.comment }}</textarea>
+          </div>
+
+          {% endfor %}
+    </div>
+  </div>
+</div>
+</div>
+</div>
+      <div class="set-right">
+        <p class="btn-wrap">
+          <button type="button" onclick="window.location.href='{% url 'nhome' %}';" class="btn bg-white">ホームへ戻る</button>
+        </p>
+      </div>
+
+      </form>        
+    </div>
+
+
+
+    <div class="sidebar" id="sidebar">
+      <div style="display: flex; justify-content: space-between; margin-bottom: -3px; margin-top: -10px;">
+        <a href="{% url 'nsettings' %}" style="flex: 1; text-decoration: none; color: inherit;">
+          <div style="padding: 10px; border: 1px solid #ccc; margin-right: 5px; text-align: center; cursor: pointer; height: 15px; background-color: #f0f0e4; color: black;">
+            設定
+          </div>
+        </a>
+        <a href="{% url 'ninformation' %}" style="flex: 1; text-decoration: none; color: inherit;">
+          <div style="padding: 10px; border: 1px solid #ccc; margin-left: 5px; text-align: center; cursor: pointer; height: 15px; background-color: #f0f0e4; color: black;">
+            情報
+          </div>
+        </a>
+      </div>
+      
+      <ul>
+        <a href="{% url 'nhome' %}" style="text-decoration: none; color: inherit;">
+        <li>
+          <img src="/media/pages/IMG_2699.jpg" alt="Image" style="width: 23px; height: 23px; margin-right: 10px;  align-items: flex-start;justify-content: start;">
+          トップページ
+        </li>
+        </a>
+        
+        <a href="{% url 'nhistory' %}" style="text-decoration: none; color: inherit;">
+        <li>
+        履歴
+        </li>
+        </a>
+
+        <a href="{% url 'nmultiple' %}" style="text-decoration: none; color: inherit;">
+          <li>
+          複数入力
+          </li>
+          </a>
+        
+        <a href="{% url 'nkoban' %}" style="text-decoration: none; color: inherit;">
+          <li>
+          工番リスト
+          </li>
+          </a>
+
+          <a href="{% url 'nhelp' %}" style="text-decoration: none; color: inherit;">
+            <li>
+            使い方ヘルプ
+            </li>
+            </a>
+        
+        <a href="{% url 'nlogin' %}" style="text-decoration: none; color: inherit;">
+        <li>ログアウト</li>
+        </a>
+
+        <a href="{% url 'delete_sagyo' %}" style="text-decoration: none; color: inherit;">
+        <li>
+        開発用(日報データ削除)
+        </li>
+        </a>
+        
+        <a href="{% url 'napproval' %}" style="text-decoration: none; color: inherit;">
+          <li>
+          開発用(承認未承認)
+          </li>
+          </a>
+      </ul>
+      <div style="display: flex; justify-content: center; margin-top: 20px;">
+        <button id="closeSidebar" style="background-color: #f0f0e4;color: black; border: none; width: 50%; cursor: pointer;height: 30px;">
+          閉じる
+        </button>
+            </div>
+
+</body>
+</html>
+<script>
+  var $btn = $('#js-navToggle');
+  var $sidebar = $('#sidebar');
+  var $closeBtn = $('#closeSidebar');
+
+  $btn.on('click', function() {
+    $sidebar.toggleClass('active'); // Toggle sidebar visibility
+  });
+
+  $closeBtn.on('click', function() {
+    $sidebar.removeClass('active'); // Close sidebar
+  });
+</script>
+
+<script>
+  // Detect iOS devices
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const videoElementTop = document.getElementById('myVideo');
+    const videoSourceTop = videoElementTop.querySelector('source');
+
+    const videoElementBottom = document.getElementById('myVideoIOS');
+    const videoSourceBottom = videoElementBottom.querySelector('source');
+
+    if (!isIOS()) {
+      // Only set the video source for non-iOS devices for the top video
+      const videos = [
+        //"/media/pages/yellow11.webm",
+        //"/media/pages/cracker1.webm",
+        //"/media/pages/brush11.webm",
+      ];
+
+      // Randomly select a video
+      const randomVideo = videos[Math.floor(Math.random() * videos.length)];
+      videoSourceTop.src = randomVideo;
+      videoElementTop.load(); // Reload the video
+    } else {
+      // Only set the video source for iOS devices for the bottom video
+      const iosVideos = [
+        //"/media/pages/cracker1.webm",
+        //"/media/pages/yellow11.webm",
+        //"/media/pages/brush11.webm",
+
+      ];
+
+      // Randomly select a video for iOS
+      const randomIOSVideo = iosVideos[Math.floor(Math.random() * iosVideos.length)];
+      videoSourceBottom.src = randomIOSVideo;
+      videoElementBottom.load(); // Reload the video
+    }
+  });
+</script>
+
+<script>
+  document.getElementById('toggleSpecialInput').addEventListener('click', function () {
+    // 各セクションを切り替え
+    var breakTimeDiv1 = document.getElementById('breakTimeDiv1');
+    var breakTimeDiv2 = document.getElementById('breakTimeDiv2');
+    var breakTimeDiv3 = document.getElementById('breakTimeDiv3');              
+    // 状態を切り替える
+    var displayState = breakTimeDiv1.style.display === 'none' ? 'block' : 'none';
+    
+    breakTimeDiv1.style.display = displayState;
+    breakTimeDiv2.style.display = displayState;
+    breakTimeDiv3.style.display = displayState;
+  });
+</script>
+
+<script>
+  // Get the video element
+  const video = document.getElementById('myVideo');
+
+  // Add an event listener for when the video ends
+  video.addEventListener('ended', () => {
+    // Hide or remove the video element
+    video.style.display = 'none'; // Hide the video
+    // OR you can remove it from the DOM with: video.remove();
+  });
+</script>

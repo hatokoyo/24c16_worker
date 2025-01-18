@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ja" xml:lang="ja">
+<head prefix="og: http://ogp.me/ns#">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+<title>使い方ヘルプ ｜ 日報アプリ</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/common62.css' %}" media="all"/>
+
+<!-- Update the CSS in the <head> section -->
+  <style>
+    .sidebar {
+      max-height: 0;
+      overflow: hidden;
+      position: fixed;
+      top: 80px;
+      left: 0;
+      width: 90%;
+      height: 470px;
+      background-color: #257c27;
+      color: white;
+      padding: 0 5% 0;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.5);
+      z-index: 1000;
+      transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+    }
+    .sidebar.active {
+      max-height: 470px;
+      padding: 20px 5% 10px;
+    }
+    .sidebar ul {
+    box-sizing: border-box;
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove padding */
+  }
+  .sidebar li {
+    background-color: white; /* White background for list items */
+    color: black; /* Black text color */
+    margin: 2px 0; /* Space between items */
+    padding: 10px; /* Padding inside the boxes */
+    border: 1px solid #ccc; /* Light gray border */
+    height:23px;
+    font-size: 95%;
+    font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", sans-serif;
+    /* No border-radius for sharp corners */
+    cursor: pointer; /* Change cursor to pointer */
+  }
+  .arrow {
+        color: green; /* 矢印の色 */
+        margin-right: 0px; /* 矢印とテキストの間に余白 */
+    }
+  .sidebar li:hover {
+    background-color: #f0f0f0; /* Light gray on hover */
+  }
+  </style>
+
+</head>
+<body>
+</div>  </header>
+  <!-- LayerHeader End -->
+<div id="main" class="main">
+  <div class="category-heading">
+    <div class="heading">
+      <div class="heading__Body">
+        <h1>使い方ヘルプ</h1>
+        <div class="navToggle">
+            <button id="js-navToggle" title="メニューの開閉ボタン"><img src="/media/pages/menuBtn.png" width="45" height="45" alt="メニュー"></button>
+          </div>
+
+    </div>
+</div>
+  </div>
+  <!-- /.category-heading -->
+
+  <!-- /.breadCrumb -->
+    <div class="main__body">
+      <!-- [ Reader Start ] -->
+      <!-- [ Reader End ] -->
+    <div class="main__body__left">
+        <h2>{{ name }} さん</h2>
+        <label>
+          <input type="radio" name="help" value=1>&thinsp;操作方法について
+          </label>
+          <div>
+          <label>
+          <input  type="radio" name="help" value=2>&thinsp;技術的な問題
+          </label>
+          </div>
+          <div>
+          <label>
+            <input type="radio" name="help" value=3>&thinsp;その他
+            </label>
+          </div>
+        <div>
+          <textarea cols="30" rows="6" name="comment"></textarea>
+          </div>
+        </div>
+
+        <div class="set-right">
+          <p class="btn-wrap">
+              <button type="submit" name="action" value="check" class="btn bg-green">送信する</button>
+          </p>
+     
+    </div>
+
+
+    
+        <div class="sidebar" id="sidebar">
+          <div style="display: flex; justify-content: space-between; margin-bottom: -3px; margin-top: -10px;">
+            <a href="{% url 'nsettings' %}" style="flex: 1; text-decoration: none; color: inherit;">
+              <div style="padding: 10px; border: 1px solid #ccc; margin-right: 5px; text-align: center; cursor: pointer; height: 15px; background-color: #f0f0e4; color: black;">
+                設定
+              </div>
+            </a>
+            <a href="{% url 'ninformation' %}" style="flex: 1; text-decoration: none; color: inherit;">
+              <div style="padding: 10px; border: 1px solid #ccc; margin-left: 5px; text-align: center; cursor: pointer; height: 15px; background-color: #f0f0e4; color: black;">
+                情報
+              </div>
+            </a>
+          </div>
+          
+          <ul>
+            <a href="{% url 'nhome' %}" style="text-decoration: none; color: inherit;">
+            <li>
+              <img src="/media/pages/IMG_2699.jpg" alt="Image" style="width: 23px; height: 23px; margin-right: 10px;  align-items: flex-start;justify-content: start;">
+              トップページ
+            </li>
+            </a>
+            
+            <a href="{% url 'nhistory' %}" style="text-decoration: none; color: inherit;">
+            <li>
+            履歴
+            </li>
+            </a>
+
+            <a href="{% url 'nmultiple' %}" style="text-decoration: none; color: inherit;">
+              <li>
+              複数入力
+              </li>
+              </a>
+            
+            <a href="{% url 'nkoban' %}" style="text-decoration: none; color: inherit;">
+              <li>
+              工番リスト
+              </li>
+              </a>
+
+              <a href="{% url 'nhelp' %}" style="text-decoration: none; color: inherit;">
+                <li>
+                使い方ヘルプ
+                </li>
+                </a>
+            
+            <a href="{% url 'nlogin' %}" style="text-decoration: none; color: inherit;">
+            <li>ログアウト</li>
+            </a>
+
+            <a href="{% url 'delete_sagyo' %}" style="text-decoration: none; color: inherit;">
+            <li>
+            開発用(日報データ削除)
+            </li>
+            </a>
+            
+            <a href="{% url 'napproval' %}" style="text-decoration: none; color: inherit;">
+              <li>
+              開発用(承認未承認)
+              </li>
+              </a>
+          </ul>
+          <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <button id="closeSidebar" style="background-color: #f0f0e4;color: black; border: none; width: 50%; cursor: pointer;height: 30px;">
+              閉じる
+            </button>
+              </div>
+              </div>
+            </div>
+
+</body>
+</html>
+<script>
+  var $btn = $('#js-navToggle');
+  var $sidebar = $('#sidebar');
+  var $closeBtn = $('#closeSidebar');
+
+  $btn.on('click', function() {
+    $sidebar.toggleClass('active'); // Toggle sidebar visibility
+  });
+
+  $closeBtn.on('click', function() {
+    $sidebar.removeClass('active'); // Close sidebar
+  });
+</script>
+
+<script>
+  // Detect iOS devices
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('content');
+
+    if (isIOS()) {
+      // Set specific size for the input box on iOS devices
+      dateInput.style.width = '119px'; // Adjust the width as needed
+      dateInput.style.height = '28px'; // Adjust the height as needed
+      dateInput.style.textAlignLast = 'left';
+      //dateInput.style.webkitAppearance = 'none';
+      //dateInput.style.mozAppearance = 'none';
+      //dateInput.style.msAppearance = 'none';
+      //dateInput.style.appearance = 'none';
+    }
+  });
+</script>
+
+<script>
+  // Detect iOS devices
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (isIOS()) {
+      // Adjust the size of time input boxes on iOS devices
+      const timeInputs = document.querySelectorAll('input[type="time"]');
+      timeInputs.forEach(input => {
+        input.style.width = '75px'; // Adjust the width as needed
+        input.style.height = '27px'; // Adjust the height as needed
+
+      });
+    }
+  });
+</script>
+

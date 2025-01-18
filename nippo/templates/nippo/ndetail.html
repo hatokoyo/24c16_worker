@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja" xml:lang="ja">
+<head prefix="og: http://ogp.me/ns#">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+<title>詳細履歴 ｜ 日報アプリ</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/common62.css' %}" media="all"/>
+
+<!-- Update the CSS in the <head> section -->
+  <style>
+    input[type="time"] {
+      -webkit-border-radius: 0px; 
+      background: white; 
+      width: 80px;
+      height: 26px; 
+      font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;
+      font-size: 14.5px;
+      border: 1px solid #ccc;
+      color: black;
+    }
+
+    input[type="time"]:disabled {
+      background: lightgray; /* 無効時の背景色を変更 */
+    }
+  </style>
+
+</head>
+<body>
+  <!-- LayerHeader End -->
+<div id="main" class="main">
+  <div class="category-heading">
+    <div class="heading">
+      <div class="heading__Body">
+        <h1>詳細履歴</h1>
+        <div class="navToggle">
+            <button id="js-navToggle" title="メニューの開閉ボタン"><img src="/media/pages/menuBtn.png" width="45" height="45" alt="メニュー"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.category-heading -->
+
+  <!-- /.breadCrumb -->
+  <div class="main__body">
+      <!-- [ Reader Start ] -->
+      <!-- [ Reader End ] -->
+    <div class="main__body__left">
+        <h2>{{ name }} さん</h2>
+
+
+      <div class="form">
+        <div>
+          <form method="POST">{% csrf_token %}
+            
+
+            
+              <div class="field">
+                <div class="field__title" style="padding-left: 10px;">日付
+                  <span class="label label-required">必須</span></div>
+                <div style="margin-bottom: 10px; padding-left: 10px;">
+                  <input type="date" value="{{ editentry.date }}" disabled class="inputbox_date_dis">
+                </div>
+              </div>
+
+            
+            
+              
+              <div class="field"><div class="field__title">勤務時間
+                <span class="label label-required"> 必須</span></div>
+                <div>
+                  <div class="field__title">
+                    <label>開始時間：</label>
+                    <input type="time" value="{{ editentry.start }}" disabled>
+                  </div>
+                </div>
+            
+                <div>
+                  <div class="field__title">
+                    <label>休憩</label>
+                    <input type="time" value="{{ editentry.break_start }}" disabled>
+                    <span>〜</span>
+                    <input type="time" value="{{ editentry.break_end }}" disabled>
+                    <label>
+                      &thinsp;<input type="checkbox" {% if editentry.total_break == "0:00:00" %}checked{% endif %} disabled>&thinsp;なし
+                    </label>
+                  </div>
+                </div>
+            
+                <div style="margin-bottom: 10px;">
+                    <label>終了時間：</label>
+                    <input type="time" value="{{ editentry.end }}" disabled>
+                </div>
+
+       
+              </div>
+
+
+              <div class="field">
+                <div class="field__title">
+                    <label>工番</label>
+                    <span class="label label-required">必須</span>
+                </div>
+            
+                <div>
+                    <select disabled class="inputbox_koban_dis">
+                        <option value="">{{ editentry.koban }}</option>
+                    </select>
+                </div>
+            
+            </div>
+
+
+
+            <div class="field"><div class="field__title">交通手段
+              <span class="label label-required">必須</span></div>
+              <div>
+                <div class="field__title">
+                  {% if trans_option == 1 %}
+                  <label>車：</label>
+                  <select disabled class="inputbox_trans_dis"> 
+                    <option >{{ editentry.trans_office }}</option>
+
+                  </select>
+               
+                  <div class="field__title1">
+                    <label>
+                      <input type="checkbox" name="trans" value="1"{% if editentry.trans == 1 %}checked{% endif %} disabled> 運転者
+                    </label>
+                    <label>
+                      <input type="checkbox" name="trans" value="0"{% if editentry.trans == 0 %}checked{% endif %} disabled> 同乗者
+                    </label>
+                </div>
+                {% elif trans_option == 0 %}
+                <label>自動車：</label>
+                <div class="field__title1">
+                  <label>
+                    <input type="checkbox" name="trans" value="1"{% if editentry.trans == 1 %}checked{% endif %} disabled> 運転者
+                  </label>
+                  <label>
+                    <input type="checkbox" name="trans" value="0"{% if editentry.trans == 0 %}checked{% endif %} disabled> 同乗者
+                  </label>
+              </div>
+              {% endif %}
+
+                <div class="field__title">
+                <label>その他：</label>
+                </div>
+              
+                <div class="field__title">
+                  <label >
+                    <input type="checkbox" name="trans" value="2" {% if editentry.trans == 2 %}checked{% endif %} disabled> 公共交通機関
+                  </label>
+                  <label>
+                    <input type="checkbox" name="trans" value="3" {% if editentry.trans == 3 %}checked{% endif %} disabled> 利用なし
+                  </label>
+              </div>
+
+
+
+            </div>
+            </div>
+
+          </div>
+          <div class="field">
+            <span class="arrow">→</span> <!-- 緑色の矢印 -->
+            <label id="toggleSpecialInput" style="cursor: pointer;">特殊入力</label>
+          
+            <!-- 休憩追加のセクション -->
+            <div id="breakTimeDiv1" style="display: none; padding-top: 5px;">
+                <div class="field__title" style="padding: 2px 0;">
+                  <label>休憩追加：</label>
+                  <div style=" color: #9c2400; font-size: smaller; padding-bottom: 5px;">休憩追加は未実装</div>
+                  <div>
+                  <input type="time" name="break_time_start2" disabled style="-webkit-border-radius: 0px; background: lightgray; width: 80px;height: 26px; font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;font-size: 14px; border: 1px solid #ccc;">
+                  <span>〜</span>
+                  <input type="time" name="break_time_end2" disabled style="-webkit-border-radius: 0px; background: lightgray; width: 80px;height: 26px; font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;font-size: 14px; border: 1px solid #ccc;">
+                </div>
+                </div>
+            </div>
+
+            <div id="breakTimeDiv2" style="display: none; padding-top: 5px;" class="field__title1">
+              <label>社内契約お弁当：</label>
+              <label>
+              <input type="radio" name="lunch_box" value="1" {% if editentry.lunch == 1 %}checked{% endif %} disabled>&thinsp;利用あり
+              </label>
+              <label>
+              &thinsp;<input type="radio" name="lunch_box" value="0" {% if editentry.lunch == 0 %}checked{% endif %} disabled>&thinsp;利用なし
+              </label>
+            </div>
+          
+            <!-- コメントのセクション -->
+            <div id="breakTimeDiv3" style="display: none;">
+              <label>コメント</label>
+              <div>
+              <textarea cols="30" rows="6" name="comment" disabled>{{ editentry.comment }}</textarea>
+              </div>
+            </div>
+          
+            <script>
+              document.getElementById('toggleSpecialInput').addEventListener('click', function () {
+                // 各セクションを切り替え
+                var breakTimeDiv1 = document.getElementById('breakTimeDiv1');
+                var breakTimeDiv2 = document.getElementById('breakTimeDiv2');
+                var breakTimeDiv3 = document.getElementById('breakTimeDiv3');              
+                // 状態を切り替える
+                var displayState = breakTimeDiv1.style.display === 'none' ? 'block' : 'none';
+                
+                breakTimeDiv1.style.display = displayState;
+                breakTimeDiv2.style.display = displayState;
+                breakTimeDiv3.style.display = displayState;
+              });
+            </script>
+          </div>
+          </div>
+
+          </div>
+
+    </div>
+  </div>
+        </div>
+          
+        </div>
+        <div class="set-right">
+          <p class="btn-wrap">
+            <button type="button" onclick="window.location.href='{% url 'nhistory' %}';" class="btn bg-white">戻る</button>
+          </p>
+        </div>
+
+          </div>
+        </div>
+      </form>     
+   
+            <script>
+                document.getElementById('toggleSpecialInput').addEventListener('click', function() {
+                    var breakTimeDiv = document.getElementById('breakTimeDiv');
+                    breakTimeDiv.style.display = breakTimeDiv.style.display === 'none' ? 'block' : 'none';
+                });
+            </script>
+            
+    
+ 
+
+
+            <div class="sidebar" id="sidebar">
+              <div style="display: flex; justify-content: space-between; margin-bottom: -3px; margin-top: -10px;">
+                <a href="{% url 'nsettings' %}" style="flex: 1; text-decoration: none; color: inherit;">
+                  <div style="padding: 10px; border: 1px solid #ccc; margin-right: 5px; text-align: center; cursor: pointer; height: 15px; background-color: #f0f0e4; color: black;">
+                    設定
+                  </div>
+                </a>
+                <a href="{% url 'ninformation' %}" style="flex: 1; text-decoration: none; color: inherit;">
+                  <div style="padding: 10px; border: 1px solid #ccc; margin-left: 5px; text-align: center; cursor: pointer; height: 15px; background-color: #f0f0e4; color: black;">
+                    情報
+                  </div>
+                </a>
+              </div>
+              
+              <ul>
+                <a href="{% url 'nhome' %}" style="text-decoration: none; color: inherit;">
+                <li>
+                  <img src="/media/pages/IMG_2699.jpg" alt="Image" style="width: 23px; height: 23px; margin-right: 10px;  align-items: flex-start;justify-content: start;">
+                  トップページ
+                </li>
+                </a>
+                
+                <a href="{% url 'nhistory' %}" style="text-decoration: none; color: inherit;">
+                <li>
+                履歴
+                </li>
+                </a>
+
+                <a href="{% url 'nmultiple' %}" style="text-decoration: none; color: inherit;">
+                  <li>
+                  複数入力
+                  </li>
+                  </a>
+                
+                <a href="{% url 'nkoban' %}" style="text-decoration: none; color: inherit;">
+                  <li>
+                  工番リスト
+                  </li>
+                  </a>
+
+                  <a href="{% url 'nhelp' %}" style="text-decoration: none; color: inherit;">
+                    <li>
+                    使い方ヘルプ
+                    </li>
+                    </a>
+                
+                <a href="{% url 'nlogin' %}" style="text-decoration: none; color: inherit;">
+                <li>ログアウト</li>
+                </a>
+
+                <a href="{% url 'delete_sagyo' %}" style="text-decoration: none; color: inherit;">
+                <li>
+                開発用(日報データ削除)
+                </li>
+                </a>
+                
+                <a href="{% url 'napproval' %}" style="text-decoration: none; color: inherit;">
+                  <li>
+                  開発用(承認未承認)
+                  </li>
+                  </a>
+              </ul>
+              <div style="display: flex; justify-content: center; margin-top: 20px;">
+                <button id="closeSidebar" style="background-color: #f0f0e4;color: black; border: none; width: 50%; cursor: pointer;height: 30px;">
+                  閉じる
+                </button>
+              </div>
+              </div>
+            </div>
+
+</body>
+</html>
+
+
+
+<script>
+  var $btn = $('#js-navToggle');
+  var $sidebar = $('#sidebar');
+  var $closeBtn = $('#closeSidebar');
+
+  $btn.on('click', function() {
+    $sidebar.toggleClass('active'); // Toggle sidebar visibility
+  });
+
+  $closeBtn.on('click', function() {
+    $sidebar.removeClass('active'); // Close sidebar
+  });
+</script>
+
+<script>
+  // Detect iOS devices
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('content');
+
+    if (isIOS()) {
+      // Set specific size for the input box on iOS devices
+      dateInput.style.width = '119px'; // Adjust the width as needed
+      dateInput.style.height = '28px'; // Adjust the height as needed
+      dateInput.style.textAlignLast = 'left';
+      //dateInput.style.webkitAppearance = 'none';
+      //dateInput.style.mozAppearance = 'none';
+      //dateInput.style.msAppearance = 'none';
+      //dateInput.style.appearance = 'none';
+    }
+  });
+</script>
+
+<script>
+  // Detect iOS devices
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (isIOS()) {
+      // Adjust the size of time input boxes on iOS devices
+      const timeInputs = document.querySelectorAll('input[type="time"]');
+      timeInputs.forEach(input => {
+        input.style.width = '75px'; // Adjust the width as needed
+        input.style.height = '27px'; // Adjust the height as needed
+
+      });
+    }
+  });
+</script>

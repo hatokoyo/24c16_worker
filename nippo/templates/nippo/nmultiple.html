@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ja" xml:lang="ja">
+<head prefix="og: http://ogp.me/ns#">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+<title>複数入力 ｜ 日報アプリ</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/common62.css' %}" media="all"/>
+
+<!-- Update the CSS in the <head> section -->
+<style>
+    input[type="time"] {
+      -webkit-border-radius: 0px; 
+      background: white; 
+      width: 80px;
+      height: 26px; 
+      font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;
+      font-size: 14.5px;
+      border: 1px solid #ccc;
+      color: black;
+    }
+
+    input[type="time"]:disabled {
+      background: lightgray; /* 無効時の背景色を変更 */
+    }
+</style>
+
+</head>
+<body>
+</div>  </header>
+  <!-- LayerHeader End -->
+<div id="main" class="main">
+  <div class="category-heading">
+    <div class="heading">
+      <div class="heading__Body">
+        <h1>複数入力</h1>
+        <div class="navToggle">
+            <button id="js-navToggle" title="メニューの開閉ボタン"><img src="/media/pages/menuBtn.png" width="45" height="45" alt="メニュー"></button>
+          </div>
+
+    </div>
+</div>
+  </div>
+  <!-- /.category-heading -->
+
+  <!-- /.breadCrumb -->
+    <div class="main__body">
+      <!-- [ Reader Start ] -->
+      <!-- [ Reader End ] -->
+    <div class="main__body__left">
+        <h2>{{ name }} さん</h2>
+
+        <!--<div style="color: #9c2400;">本日分の日報は送信済みです。</div>
+        <span class="arrow">→</span> 
+        <a href="{% url 'ninformation' %}">工番を追加して送信する</a>-->
+
+        <div class="form">
+            <div>
+              <form method="POST">{% csrf_token %}
+
+            
+
+            
+            
+              <div class="field">
+                <div class="field__title" style="margin-left: 10px;">
+                  <label>日付</label>
+                  <span class="label label-required">必須</span>
+                </div>
+                <div  style="margin-left: 10px;"><!--iOSの調整はJavaから-->
+                  <input type="date" name="content" id="content" class="inputbox_date">
+                </div>
+              <script>
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('content').value = today;
+              </script>
+              </div>
+
+
+
+              <div class="field">
+                <div class="field__title">
+                    <label>工番１</label>
+                    <span class="label label-required">必須</span>
+                  </div>
+                  <div>
+                    <select name="koban1" class="inputbox_koban">
+                        {% for koban in koban_numbers %}
+                            <option value="{{koban.value}}" {% if editentry.koban == koban.value %}selected{% endif %}>{{ koban.value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                  <div class="field__title" style="padding-top: 10px;">
+                    <label>開始時刻：</label>
+                    <input type="time" name="start_time1" value="08:00">
+                  </div>
+                </div>
+            
+                <div>
+                    <label>終了時刻：</label>
+                    <input type="time" name="end_time1" value="12:00">
+                </div>
+                <input type="hidden" name=sequence1 value=1>
+              </div>
+
+
+
+              <div class="field">
+                <div class="field__title">
+                    <label>工番２</label>
+                    <span class="label label-required">必須</span>
+                    <!--<button type="button" id="addKobanButton" style="transform: scale(0.9);  border-radius: 50%; border: 1px solid black;">＋</button>-->
+                    <button type="button" id="addKobanButton" style="transform: scale(0.9);">＋</button>
+                    <button type="button" id="removeKobanButton" style="transform: scale(0.9);">ー</button>
+                  </div>
+                  <div>
+                    <select name="koban2" class="inputbox_koban">
+                        {% for koban in koban_numbers %}
+                            <option value="{{koban.value}}" {% if editentry.koban == koban.value %}selected{% endif %}>{{ koban.value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                  <div class="field__title" style="padding-top: 10px;">
+                    <label>開始時刻：</label>
+                    <input type="time" name="start_time2" value="13:00">
+                  </div>
+                </div>
+            
+                <div>
+                    <label>終了時刻：</label>
+                    <input type="time" name="end_time2"  value="17:00">
+                </div>
+                <input type="hidden" name=sequence2 value=2>
+                  <!-- 重複情報用のhiddenフィールド -->
+                <input type="hidden" name="break_overlap_flag" value="0">
+              </div>
+
+              <div class="field">
+                <div id="additionalKobanFields"></div>
+              </div>
+
+
+        
+              
+
+          
+              <div class="field">
+                <div class="field__title" style="padding: 2px 0;">
+                  <label>休憩</label>
+                  <span class="label label-required">必須</span>
+                  <div style="padding-top: 6px;">
+                  <input type="time" name="break_time_start" id="lunch_time_start" value="12:00">
+                  <span>〜</span>
+                  <input type="time" name="break_time_end" id="lunch_time_end" value="13:00">
+                  <label>
+                    &thinsp;<input type="checkbox" id="lunch_break_none">&thinsp;なし
+                  </label>
+                </div>
+              </div>
+              </div>
+
+              <div class="field"><div class="field__title">交通手段
+                <span class="label label-required">必須</span></div>
+                <div>
+                  <div class="field__title">
+                    {% if trans_option == 1 %}
+                    <label>車：</label>
+                    <select required name="trans_office" class="inputbox_trans"> 
+                      <option value="" disabled selected hidden>事業所名を選択</option>
+                      <option value="滋賀事業所">滋賀事業所</option>
+                      <option value="京都事業所">京都事業所</option>
+                      <option value="自宅">自宅</option>
+                      <option value="その他">その他</option>
+                    </select>
+                 
+                    <div class="field__title1">
+                    <label>
+                    <input required type="radio" name="trans" value="1">&thinsp;運転者
+                    </label>
+                    <label>
+                    &thinsp;<input type="radio" name="trans" value="0">&thinsp;同乗者
+                    </label>
+                  </div>
+                  {% elif trans_option == 0 %}
+                  <label>自動車：</label>
+                  <div class="field__title1">
+                  <label>
+                  <input required type="radio" name="trans" value="1">&thinsp;運転者
+                  </label>
+                  <label>
+                  &thinsp;<input type="radio" name="trans" value="0">&thinsp;同乗者
+                  </label>
+                </div>
+                {% endif %}
+
+                  <div class="field__title">
+                  <label>その他：</label>
+                  </div>
+                
+                  <div class="field__title">
+                  <label>
+                    <input type="radio" name="trans" value="2">&thinsp;公共交通機関
+                  </label>
+                  <label>
+                    &thinsp;<input type="radio" name="trans" value="3">&thinsp;利用なし
+                  </label>
+                </div>
+
+                </div>
+                </div>
+                </div>
+
+
+                <div class="field">
+                  <span class="arrow">→</span> <!-- 緑色の矢印 -->
+                  <label id="toggleSpecialInput" style="cursor: pointer;">特殊入力</label>
+                
+                  <!-- 休憩追加のセクション -->
+                  <div id="breakTimeDiv1" style="display: none; padding-top: 5px;">
+                    <div class="field__title" style="padding: 2px 0;">
+                      <label>休憩追加：</label>
+                      <div style=" color: #9c2400; font-size: smaller; padding-bottom: 5px;">休憩追加は未実装</div>
+                      <div>
+                      <input type="time" name="break_time_start2" style="-webkit-border-radius: 0px; background: white; width: 80px;height: 26px; font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;font-size: 14px; border: 1px solid #ccc;">
+                      <span>〜</span>
+                      <input type="time" name="break_time_end2" style="-webkit-border-radius: 0px; background: white; width: 80px;height: 26px; font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;font-size: 14px; border: 1px solid #ccc;">
+                    </div>
+                    </div>
+                </div>
+
+                  <div id="breakTimeDiv2" style="display: none; padding-top: 5px;" class="field__title1">
+                    <label>社内契約お弁当：</label>
+                    <label>
+                    <input type="radio" name="lunch_box" value="1">&thinsp;利用あり
+                    </label>
+                    <label>
+                    &thinsp;<input checked type="radio" name="lunch_box" value="0">&thinsp;利用なし
+                    </label>
+                  </div>
+                
+                  <!-- コメントのセクション -->
+                  <div id="breakTimeDiv3" style="display: none;">
+                    <label>コメント</label>
+                    <div>
+                    <textarea cols="30" rows="6" name="comment"></textarea>
+                    </div>
+                  </div>
+                
+
+                </div>
+                </div>
+
+                </div>
+
+          </div>
+        </div>
+
+    
+  
+            
+            <div class="set-right">
+              <p class="btn-wrap">
+                  <button type="submit" name="action" value="check" class="btn bg-green">送信する</button>
+              </p>
+            </form>      
+        </div>
+
+        <div class="sidebar" id="sidebar">
+          <div style="display: flex; justify-content: space-between; margin-bottom: -3px; margin-top: -10px;">
+            <a href="{% url 'nsettings' %}" style="flex: 1; text-decoration: none; color: inherit;">
+              <div style="padding: 10px; border: 1px solid #ccc; margin-right: 5px; text-align: center; cursor: pointer; height: 15px; background-color: #f0f0e4; color: black;">
+                設定
+              </div>
+            </a>
+            <a href="{% url 'ninformation' %}" style="flex: 1; text-decoration: none; color: inherit;">
+              <div style="padding: 10px; border: 1px solid #ccc; margin-left: 5px; text-align: center; cursor: pointer; height: 15px; background-color: #f0f0e4; color: black;">
+                情報
+              </div>
+            </a>
+          </div>
+          
+          <ul>
+            <a href="{% url 'nhome' %}" style="text-decoration: none; color: inherit;">
+            <li>
+              <img src="/media/pages/IMG_2699.jpg" alt="Image" style="width: 23px; height: 23px; margin-right: 10px;  align-items: flex-start;justify-content: start;">
+              トップページ
+            </li>
+            </a>
+            
+            <a href="{% url 'nhistory' %}" style="text-decoration: none; color: inherit;">
+            <li>
+            履歴
+            </li>
+            </a>
+
+            <a href="{% url 'nmultiple' %}" style="text-decoration: none; color: inherit;">
+              <li>
+              複数入力
+              </li>
+              </a>
+            
+            <a href="{% url 'nkoban' %}" style="text-decoration: none; color: inherit;">
+              <li>
+              工番リスト
+              </li>
+              </a>
+
+              <a href="{% url 'nhelp' %}" style="text-decoration: none; color: inherit;">
+                <li>
+                使い方ヘルプ
+                </li>
+                </a>
+            
+            <a href="{% url 'nlogin' %}" style="text-decoration: none; color: inherit;">
+            <li>ログアウト</li>
+            </a>
+
+            <a href="{% url 'delete_sagyo' %}" style="text-decoration: none; color: inherit;">
+            <li>
+            開発用(日報データ削除)
+            </li>
+            </a>
+            
+            <a href="{% url 'napproval' %}" style="text-decoration: none; color: inherit;">
+              <li>
+              開発用(承認未承認)
+              </li>
+              </a>
+          </ul>
+          <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <button id="closeSidebar" style="background-color: #f0f0e4;color: black; border: none; width: 50%; cursor: pointer;height: 30px;">
+              閉じる
+            </button>
+              </div>
+              </div>
+            </div>
+
+</body>
+</html>
+
+<script>
+  var $btn = $('#js-navToggle');
+  var $sidebar = $('#sidebar');
+  var $closeBtn = $('#closeSidebar');
+
+  $btn.on('click', function() {
+    $sidebar.toggleClass('active'); // Toggle sidebar visibility
+  });
+
+  $closeBtn.on('click', function() {
+    $sidebar.removeClass('active'); // Close sidebar
+  });
+</script>
+
+<script>
+  // Detect iOS devices
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('content');
+
+    if (isIOS()) {
+      // Set specific size for the input box on iOS devices
+      dateInput.style.width = '140px'; // Adjust the width as needed
+      dateInput.style.height = '28px'; // Adjust the height as needed
+      dateInput.style.textAlignLast = 'left';
+      //dateInput.style.webkitAppearance = 'none';
+      //dateInput.style.mozAppearance = 'none';
+      //dateInput.style.msAppearance = 'none';
+      //dateInput.style.appearance = 'none';
+    }
+  });
+</script>
+
+<script>
+  // Detect iOS devices
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (isIOS()) {
+      // Adjust the size of time input boxes on iOS devices
+      const timeInputs = document.querySelectorAll('input[type="time"]');
+      timeInputs.forEach(input => {
+        input.style.width = '75px'; // Adjust the width as needed
+        input.style.height = '27px'; // Adjust the height as needed
+        input.style.textAlignLast = 'left';
+      });
+    }
+  });
+</script>
+
+<script>
+  document.getElementById('addKobanButton').addEventListener('click', function() {
+    const additionalKobanFields = document.getElementById('additionalKobanFields');
+    const newKobanIndex = additionalKobanFields.children.length + 4; // Start from 3 for "工番３"
+
+    const newFieldHTML = `
+      <div class="field" id="kobanField${newKobanIndex - 1}">
+        <div class="field__title">
+          <label>工番${newKobanIndex - 1}</label>
+        </div>
+        <div>
+          <select name="koban${newKobanIndex - 1}" style="-webkit-border-radius: 0px; background: white; width: 140px; height: 30px; font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif; font-size: 14px; border: 1px solid #ccc;">
+            {% for koban in koban_numbers %}
+              <option value="{{koban.value}}">{{ koban.value }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <div class="field__title" style="padding-top: 10px;">
+            <label>開始時刻：</label>
+            <input type="time" name="start_time${newKobanIndex - 1}" value="13:00" style="-webkit-border-radius: 0px; background: white; width: 80px;height: 26px; font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;font-size: 14px; border: 1px solid #ccc;">
+          </div>
+        </div>
+
+        <div>
+          <label>終了時刻：</label>
+          <input type="time" name="end_time${newKobanIndex - 1}" value="17:00" style="-webkit-border-radius: 0px; background: white; width: 80px;height: 26px; font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', sans-serif;font-size: 14px; border: 1px solid #ccc;">
+        </div>
+         <input type="hidden" name="sequence${newKobanIndex - 1}" value="${newKobanIndex - 1}">
+      </div>
+    `;
+
+    additionalKobanFields.insertAdjacentHTML('beforeend', newFieldHTML);
+    addEventListenersToButtons();
+  });
+
+  document.getElementById('removeKobanButton').addEventListener('click', function() {
+    const additionalKobanFields = document.getElementById('additionalKobanFields');
+    if (additionalKobanFields.children.length > 0) {
+      additionalKobanFields.removeChild(additionalKobanFields.lastElementChild);
+    }
+  });
+
+  function addEventListenersToButtons() {
+    document.querySelectorAll('.addKobanButton').forEach(button => {
+      button.addEventListener('click', function() {
+        document.getElementById('addKobanButton').click();
+      });
+    });
+
+    document.querySelectorAll('.removeKobanButton').forEach(button => {
+      button.addEventListener('click', function() {
+        const parentField = this.closest('.field');
+        if (parentField && parentField.id !== 'kobanField2') {
+          parentField.remove();
+        }
+      });
+    });
+  }
+
+  // Initial call to add event listeners
+  addEventListenersToButtons();
+</script>
+
+<script>
+  document.getElementById('toggleSpecialInput').addEventListener('click', function () {
+    // 各セクションを切り替え
+    var breakTimeDiv1 = document.getElementById('breakTimeDiv1');
+    var breakTimeDiv2 = document.getElementById('breakTimeDiv2');
+    var breakTimeDiv3 = document.getElementById('breakTimeDiv3');              
+    // 状態を切り替える
+    var displayState = breakTimeDiv1.style.display === 'none' ? 'block' : 'none';
+    
+    breakTimeDiv1.style.display = displayState;
+    breakTimeDiv2.style.display = displayState;
+    breakTimeDiv3.style.display = displayState;
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    function checkTimeOverlapAndGaps() {
+      const timePairs = [];
+      let isBreakOverlapping = 0; // 休憩時間の重複フラグ（0: 重複なし, 1: 重複あり）
+
+      // 勤務時間の開始時刻と終了時刻を動的に取得
+      const startTimes = document.querySelectorAll('input[name^="start_time"]');
+      const endTimes = document.querySelectorAll('input[name^="end_time"]');
+
+      startTimes.forEach((startTimeInput, index) => {
+        const startTime = startTimeInput.value;
+        const endTime = endTimes[index]?.value; // 対応する終了時刻を取得
+        if (startTime && endTime) {
+          timePairs.push({ start: startTime, end: endTime });
+        }
+      });
+
+      // 休憩時間を取得
+      const breakStart = document.querySelector('input[name="break_time_start"]').value;
+      const breakEnd = document.querySelector('input[name="break_time_end"]').value;
+      const breakTime = breakStart && breakEnd ? { start: breakStart, end: breakEnd } : null;
+
+      // 勤務時間ペアを開始時刻でソート
+      timePairs.sort((a, b) => a.start.localeCompare(b.start));
+
+      // 勤務時間と空き時間のチェック
+      let previousEnd = null;
+      for (let i = 0; i < timePairs.length; i++) {
+        const { start, end } = timePairs[i];
+
+        // 勤務時間同士の重複チェック
+        if (previousEnd && previousEnd > start) {
+          alert('勤務時間に重複があります。');
+          return false; // フォーム送信をブロック
+        }
+
+        // 空き時間のチェック（ただし休憩時間を考慮）
+        if (previousEnd && previousEnd < start) {
+          // 空き時間が休憩時間と一致する場合は無視
+          if (
+            breakTime &&
+            previousEnd >= breakTime.start &&
+            start <= breakTime.end
+          ) {
+            // 空き時間が休憩時間と一致するので無視
+          } else {
+            alert(`空き時間があります: ${previousEnd} から ${start}`);
+            return false; // フォーム送信をブロック
+          }
+        }
+
+        previousEnd = end; // 次の勤務時間の開始と比較
+      }
+
+      // 休憩時間の重複チェック
+      if (breakTime) {
+        timePairs.forEach(({ start, end }) => {
+          if (!(breakTime.end <= start || breakTime.start >= end)) {
+            isBreakOverlapping = 1; // 重複があればフラグを1に設定
+          }
+        });
+      }
+
+      // hiddenフィールドに休憩時間の重複フラグを設定
+      const overlapField = document.querySelector('input[name="break_overlap_flag"]');
+      if (overlapField) {
+        overlapField.value = isBreakOverlapping; // 重複があれば1、なければ0
+      }
+
+      return true; // フォーム送信を許可
+    }
+
+    // フォーム送信時にチェックを追加
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (e) {
+      if (!checkTimeOverlapAndGaps()) {
+        e.preventDefault(); // フォーム送信をブロック
+      }
+    });
+  });
+</script>
+
+
+
+

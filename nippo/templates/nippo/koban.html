@@ -1,0 +1,64 @@
+<html lang="ja"></html>
+<head>
+    <meta charset="UTF-8">
+    <title>工番を更新</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+        }
+        form div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>名前と工番を入力</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <label for="name">名前:</label>
+                <input type="text" id="name" name="name" placeholder="名前を入力してください" required>
+            </div>
+            <div>
+                <label for="construction_number">工番:</label>
+                <input type="text" id="construction_number" name="construction_number" placeholder="工事番号を入力してください" required>
+            </div>
+            <button type="submit">送信</button>
+        </form>
+    </div>
+</body>
+</html>
+
+<div class="delete-container">
+    <form method="post" action="{% url 'koban_delete' %}" onsubmit="return confirm('本当に全ての工事番号を削除しますか？');">
+        {% csrf_token %}
+        <button type="submit" class="delete-button">削除</button>
+    </form>
+</div>
+
+

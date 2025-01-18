@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>数字を2倍に</title>
+</head>
+<body>
+    <h1>数字を入力してください</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="number" name="number" step="0.1" required>
+        <button type="submit">2倍にする</button>
+    </form>
+    {% if result is not None %}
+    <p>結果: {{ result }}</p>
+    {% endif %}
+
+
+    <div class="delete-container">
+        <form method="post" action="{% url 'delete_sagyo' %}" onsubmit="return confirm('本当に全ての工事番号を削除しますか？');">
+            {% csrf_token %}
+            <button type="submit" class="delete-button">削除</button>
+        </form>
+    </div>
+    <div class="delete-container">
+        <form method="post" action="{% url 'nhome' %}" >
+            {% csrf_token %}
+            <button type="submit" class="delete-button">ホームへ</button>
+        </form>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>status変更</title>
+</head>
+<body>
+    <h1>チェックボックスをクリックして、送信ボタンでstatusを変更</h1>
+    <form method="post" action="{% url 'update_status' %}">
+        {% csrf_token %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Idx</th>
+                    <th>User ID</th>
+                    <th>Date</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Zangyo</th>
+                    <th>Total Time</th>
+                    <th>Total Break</th>
+                    <th>Koban</th>
+                    <th>Add Time</th>
+                    <th>Status</th>
+                    <th>Break Start</th>
+                    <th>Break End</th>
+                    <th>Trans</th>
+                    <th>Trans Office</th>
+                    <th>Sequence</th>
+                    <th>Total Kinmu</th>
+                    <th>Lunch</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in nippo_records %}
+                <tr>
+                    <td><input type="checkbox" name="selected_rows" value="{{ record.idx }}"></td>
+                    <td>{{ record.idx }}</td>
+                    <td>{{ record.userid }}</td>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.start }}</td>
+                    <td>{{ record.end }}</td>
+                    <td>{{ record.zangyo }}</td>
+                    <td>{{ record.total_time }}</td>
+                    <td>{{ record.total_break }}</td>
+                    <td>{{ record.koban }}</td>
+                    <td>{{ record.add_time }}</td>
+                    <td>{{ record.status }}</td>
+                    <td>{{ record.break_start }}</td>
+                    <td>{{ record.break_end }}</td>
+                    <td>{{ record.trans }}</td>
+                    <td>{{ record.trans_office }}</td>
+                    <td>{{ record.sequence }}</td>
+                    <td>{{ record.total_kinmu }}</td>
+                    <td>{{ record.lunch }}</td>
+                    <td>{{ record.comment }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">ここやで</button>
+        <a href="{% url 'nhome' %}">ホームに戻る</a>
+    </form>
+</body>
+</html>
+
