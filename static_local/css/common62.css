@@ -1,9 +1,3 @@
-/* ***************************
-@media only screenの時は、親CSSをもとにして、記入があるところだけ変更される。
-@media only screen and (min-width: 720px) {
-
-*************************** */
-
 
 body {
   font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", sans-serif;
