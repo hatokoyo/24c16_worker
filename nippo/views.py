@@ -120,9 +120,10 @@ def nippologin(request):
         # GETリクエストの場合、名前入力フォームを表示
         return render(request, 'nippo/nlogin.html')
 
-    
+# 通常日報入力*****************************************************
 def nippohome(request):
     if 'action' in request.POST:
+            # 勤怠情報*****************************************************
             #print(request.POST)  
             name = request.session.get('name')  
             koban_numbers = request.session.get('koban_numbers')
@@ -271,7 +272,7 @@ def nippohome(request):
 
 
 
-def nippomultiple(request):
+def nippomultiple(request):# 日報複数入力
     if 'action' in request.POST:
             #print(request.POST)  
             total_break_time = timedelta(0)
@@ -434,7 +435,7 @@ def nippomultiple(request):
             return render(request, 'nippo/nmultiple.html', {'name': name, 'koban_numbers': koban_numbers,'trans_option':trans_option})
 
 
-def nippohistory(request):
+def nippohistory(request):# 履歴
     name = request.session.get('name')  # セッションからnameを取得
     if request.method == 'POST':
         selected_month = request.POST.get('selected_month')
@@ -568,8 +569,8 @@ def nippohistory(request):
         time_parts = datetime.strptime(total_kinmu, '%H:%M:%S')
         total_kinmu = timedelta(hours=time_parts.hour, minutes=time_parts.minute, seconds=time_parts.second)
 
-# 負の値をチェックしてリセット
-        if total_kinmu.total_seconds() < 0:  # 負の「時間」を確認
+
+        if total_kinmu.total_seconds() < 0:  
             total_kinmu = timedelta(seconds=abs(total_kinmu.total_seconds()))  # 負の時間を正に変換
   
         # 新しい属性としてformatted_date, formatted_start, formatted_endを追加
@@ -633,7 +634,7 @@ def nippokoban(request):
     return render(request, 'nippo/nkoban.html', {'name': name,'koban_numbers':koban_numbers})
 
 
-def nippoedit(request,idx):
+def nippoedit(request,idx):# 編集機能
 
     if 'action' in request.POST:
             break_time_start=None
@@ -763,15 +764,14 @@ def nippoedit(request,idx):
             koban_numbers = request.session.get('koban_numbers')  # セッションからkoban_numbersを取得   
             return render(request, 'nippo/nedit.html', {'name': name, 'koban_numbers': koban_numbers,'editentry': editentry,'trans_option':trans_option})
 
-def nippodetail(request,idx):
-
+def nippodetail(request,idx):# 履歴から日報詳細情報の閲覧
             editentry = get_object_or_404(nippo, idx=str(idx).split('-')[0])
             trans_option = request.session.get('trans_option')
             name = request.session.get('name')  # セッションからnameを取得
             koban_numbers = request.session.get('koban_numbers')  # セッションからkoban_numbersを取得   
             return render(request, 'nippo/ndetail.html', {'name': name, 'koban_numbers': koban_numbers,'editentry': editentry,'trans_option':trans_option})
 
-def nippodetail_multiple(request,idx):
+def nippodetail_multiple(request,idx):# 履歴から複数入力日報での詳細情報の閲覧
 
             idx_prefix=idx.split('-')[0]
             request.session['idx_prefix'] = idx_prefix  # nameをセッションに保存  
